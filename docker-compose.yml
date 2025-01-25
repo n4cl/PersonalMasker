@@ -1,0 +1,7 @@
+services:
+    personal:
+        build:
+            context: ./
+        volumes:
+            - ./:/usr/local/app
+        container_name: personal
