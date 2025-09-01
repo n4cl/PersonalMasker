@@ -9,6 +9,8 @@ dependencies = [
     "ja-ginza==5.2.0",
     "numpy==1.26.4",
     "spacy==3.7.5",
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
 ]
 
 [dependency-groups]
