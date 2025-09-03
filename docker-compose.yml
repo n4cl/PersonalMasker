@@ -2,7 +2,8 @@ services:
     personal:
         build:
             context: ./
-        working_dir: /usr/local/app
+            dockerfile: backend/Dockerfile
+        working_dir: /usr/local/app/backend
         volumes:
             - ./:/usr/local/app
         ports:
@@ -11,5 +12,5 @@ services:
         environment:
             - PYTHONPATH=/usr/local/app
             - WATCHFILES_FORCE_POLLING=1
-        command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /usr/local/app
+        command: uvicorn backend.app:app --host 0.0.0.0 --port 8000 --reload --reload-dir /usr/local/app
 
