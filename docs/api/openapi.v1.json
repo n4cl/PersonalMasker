@@ -1,0 +1,212 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "PersonalMasker API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "ヘルスチェック",
+        "description": "死活監視。APIプロセスが起動していれば200を返します。",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mask": {
+      "post": {
+        "tags": [
+          "mask"
+        ],
+        "summary": "テキスト中の個人情報をマスク",
+        "description": "設計段階: プレーンテキストを受け取り、マスク済みテキストと検出エンティティを返す想定です。現時点では未実装のため 501 を返します。",
+        "operationId": "mask_text_mask_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaskRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "マスク結果（将来実装）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaskResponse"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "未実装"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Entity": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "start_char": {
+            "type": "integer",
+            "title": "Start Char"
+          },
+          "end_char": {
+            "type": "integer",
+            "title": "End Char"
+          }
+        },
+        "type": "object",
+        "required": [
+          "label",
+          "text",
+          "start_char",
+          "end_char"
+        ],
+        "title": "Entity"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "MaskRequest": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "title": "Text"
+          }
+        },
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "MaskRequest",
+        "example": {
+          "text": "東京都の太郎はメール taro@example.com に連絡した。"
+        }
+      },
+      "MaskResponse": {
+        "properties": {
+          "original": {
+            "type": "string",
+            "title": "Original"
+          },
+          "masked": {
+            "type": "string",
+            "title": "Masked"
+          },
+          "detected": {
+            "items": {
+              "$ref": "#/components/schemas/Entity"
+            },
+            "type": "array",
+            "title": "Detected"
+          }
+        },
+        "type": "object",
+        "required": [
+          "original",
+          "masked",
+          "detected"
+        ],
+        "title": "MaskResponse",
+        "example": {
+          "detected": [
+            {
+              "end_char": 6,
+              "label": "PERSON",
+              "start_char": 4,
+              "text": "太郎"
+            },
+            {
+              "end_char": 27,
+              "label": "EMAIL",
+              "start_char": 11,
+              "text": "taro@example.com"
+            }
+          ],
+          "masked": "＊＊＊の＊＊はメール *************** に連絡した。",
+          "original": "東京都の太郎はメール taro@example.com に連絡した。"
+        }
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
