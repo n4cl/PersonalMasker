@@ -2,44 +2,86 @@ PersonalMasker
 ===
 
 ## 概要
-PersonalMasker は、ドキュメント内の個人情報を自動検出し、マスク処理を行うアプリケーションを予定しています。
+PersonalMasker は、テキスト中の個人情報（PII）を自動検出し、マスク処理を行うバックエンド API を提供します。v0.1.0 では REST API `/mask` を提供し、検出スパンの位置（元テキスト/マスク後テキストの両方）とマスク済みテキストを返します。
 
-個人情報を匿名化し、安全なドキュメント共有を実現します。
+## クイックスタート
+### 前提
+- Docker / Docker Compose
 
-本アプリケーションは以下の特徴を持つ予定です：  
-- Web インターフェースと REST API の両方をサポート  
-- カスタマイズ可能なマスキング設定
+### 起動
+```bash
+docker-compose up
+```
+- ヘルスチェック: `GET http://localhost:8000/health` → `{ "status": "healthy" }`
+- OpenAPI: `docs/api/openapi.v1.json`
+- FastAPI ドキュメント: `http://localhost:8000/docs`
 
-## 予定している機能
+### 例: マスキング API
+- エンドポイント: `POST /mask`
+- リクエスト例
+```bash
+curl -sS -X POST http://localhost:8000/mask \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "text": "東京都の太郎はメール taro@example.com に連絡した。",
+    "targets": ["PERSON","LOCATION","ORGANIZATION","EMAIL","PHONE","URL"],
+    "masking": {"replacement": "＊", "preserve_length": true}
+  }'
+```
+- レスポンス（概要）
+```json
+{
+  "original": "...",
+  "masked": "...",
+  "detected": [
+    {
+      "label": "PERSON",
+      "text": "太郎",
+      "start_char": 4,
+      "end_char": 6,
+      "masked_start": 4,
+      "masked_end": 6
+    },
+    {
+      "label": "EMAIL",
+      "text": "taro@example.com",
+      "start_char": 11,
+      "end_char": 27,
+      "masked_start": 11,
+      "masked_end": 33
+    }
+  ]
+}
+```
 
-### マスキング機能
-- テキスト内の個人情報を自動検出しマスク処理を実施
-- 以下の個人情報に対応予定
-  - 氏名
-  - 住所 
-  - 電話番号
-  - メールアドレス
+### マスキングオプション
+- `targets?: string[]`（既定: `[PERSON, LOCATION, ORGANIZATION, EMAIL, PHONE, URL]`）
+- `masking?: { replacement?: string; preserve_length?: boolean; fixed_length?: number|null }`
+  - `preserve_length=true`（既定）: 元の長さを維持
+  - `fixed_length` 指定時: 常にその長さ
+  - `preserve_length=false` かつ `fixed_length` 未指定: `replacement` を1回だけ
+- `detected[].start_char/end_char`: 元テキスト基準
+- `detected[].masked_start/masked_end`: マスク後テキスト基準
 
-### 対応フォーマット
-- プレーンテキスト (.txt)
-- Microsoft Office ファイル
-  - Word (.docx)
-  - Excel (.xlsx) 
-  - PowerPoint (.pptx)
+## 開発
+### テスト/Lint（Docker コンテナ内実行）
+- テスト: `make test`
+- Lint: `make lint`
+- フォーマット: `make fmt`
 
-### インターフェース
-#### Web インターフェース
-- ドラッグ&ドロップによるファイルアップロード
-- マスク処理のプレビュー機能
-- 処理済みファイルのダウンロード
-- 処理履歴の管理
+### OpenAPI の再生成
+```bash
+docker exec -w /usr/local/app personal \
+  python backend/scripts/export_openapi.py --out docs/api/openapi.v1.json
+```
 
-#### REST API
-- ファイルアップロード
-- マスク処理実行
-- ファイルダウンロード
-
-## プロジェクトの状態
-現在、PersonalMasker は設計段階にあり、最初のプロトタイプ開発に着手しています。  
-次のマイルストーンでは以下を目指します：  
-- マスキングアルゴリズムの実装
+## プロジェクトの状態（v0.1.0）
+- 実装済み
+  - `/mask` API（文分割 → GiNZA NER → 正規表現補完 → スパンマージ → マスク）
+  - OpenAPI 固定化（`docs/api/openapi.v1.json`）
+  - テスト（`backend/tests/...`）
+  - Ruff（`backend/ruff.toml`）、CI（`.github/workflows/ruff.yml`）
+- 今後
+  - 文分割の精度チューニング
+  - 追加エンティティ/ルール、ユーザ辞書の検討
+  - フロントエンド/運用ドキュメントの拡充
