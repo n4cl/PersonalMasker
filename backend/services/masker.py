@@ -15,8 +15,6 @@ import re
 from collections.abc import Iterable
 from dataclasses import dataclass
 
-import spacy
-
 
 @dataclass
 class Span:
@@ -33,6 +31,9 @@ class Masker:
 
     def __init__(self, model_name: str = "ja_ginza") -> None:
         # モデルは起動時にロードして保持（初回リクエストの重さを避ける）
+        # CI の OpenAPI 生成時など、トップレベルimportで重依存を解決しないため局所import
+        import spacy
+
         self.nlp = spacy.load(model_name)
         # 日本語向けの閉じ括弧/引用符と終端記号
         self.closers: str = "」』］】）】〉》”’\"]"
@@ -70,7 +71,6 @@ class Masker:
             spans.append((0, n))
         return spans
 
-
     @staticmethod
     def _map_label(ent_label: str) -> str | None:
         """GiNZA のラベルを API 公開ラベルへ正規化。該当しない場合は None。"""
@@ -89,7 +89,6 @@ class Masker:
             return "URL"
         return None
 
-
     def _regex_pii(self, text: str, allow: Iterable[str]) -> list[Span]:
         spans: list[Span] = []
         allow_set = set(allow)
@@ -103,7 +102,6 @@ class Masker:
             for m in self.re_phone.finditer(text):
                 spans.append(Span(m.start(), m.end(), "PHONE", m.group(0)))
         return spans
-
 
     @staticmethod
     def _merge_spans(spans: list[Span]) -> list[Span]:
@@ -122,7 +120,6 @@ class Masker:
         merged.append(cur)
         return merged
 
-
     @staticmethod
     def _repeat_to_length(token: str, length: int) -> str:
         """token を繰り返して指定長にし、超過分は切り詰める。"""
@@ -130,7 +127,6 @@ class Masker:
             return ""
         times, rem = divmod(length, len(token))
         return token * times + token[:rem]
-
 
     def mask(
         self,

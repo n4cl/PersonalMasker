@@ -24,8 +24,8 @@ class _FakeNLP:
 
 @pytest.fixture
 def masker(monkeypatch: pytest.MonkeyPatch) -> Masker:
-    # spacy.load をスタブ化して重いモデルロードを回避
-    monkeypatch.setattr("backend.services.masker.spacy.load", lambda _name: _FakeNLP())
+    # spaCy のロードをスタブ化して、Masker 生成時の重い依存を回避
+    monkeypatch.setattr("spacy.load", lambda _name: _FakeNLP())
     return Masker(model_name="ja_ginza")
 
 
