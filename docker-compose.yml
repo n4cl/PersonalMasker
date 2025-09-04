@@ -3,7 +3,7 @@ services:
         build:
             context: ./
             dockerfile: backend/Dockerfile
-        working_dir: /usr/local/app/backend
+        working_dir: /usr/local/app
         volumes:
             - ./:/usr/local/app
         ports:

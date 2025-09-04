@@ -86,14 +86,6 @@
           "end_char": {
             "type": "integer",
             "title": "End Char"
-          },
-          "masked_start": {
-            "type": "integer",
-            "title": "Masked Start"
-          },
-          "masked_end": {
-            "type": "integer",
-            "title": "Masked End"
           }
         },
         "type": "object",
@@ -101,9 +93,7 @@
           "label",
           "text",
           "start_char",
-          "end_char",
-          "masked_start",
-          "masked_end"
+          "end_char"
         ],
         "title": "Entity"
       },
@@ -191,16 +181,12 @@
             {
               "end_char": 6,
               "label": "PERSON",
-              "masked_end": 6,
-              "masked_start": 4,
               "start_char": 4,
               "text": "太郎"
             },
             {
               "end_char": 27,
               "label": "EMAIL",
-              "masked_end": 27,
-              "masked_start": 11,
               "start_char": 11,
               "text": "taro@example.com"
             }

@@ -1,0 +1,8 @@
+line-length = 120
+target-version = "py312"
+
+[lint]
+# F: Pyflakes, I: isort, E/W: pycodestyle, B: bugbear, UP: pyupgrade
+# ARG: unused-arguments, PT: pytest-style, C4: comprehensions
+select = ["F", "I", "E", "W", "B", "UP", "ARG", "PT", "C4"]
+ignore = []
