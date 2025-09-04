@@ -1,0 +1,232 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "PersonalMasker API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "ヘルスチェック",
+        "description": "死活監視。APIプロセスが起動していれば200を返します。",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mask": {
+      "post": {
+        "tags": [
+          "mask"
+        ],
+        "summary": "テキスト中の個人情報をマスク",
+        "description": "プレーンテキストを受け取り、指定ラベルのエンティティをマスクします。文単位で解析し、検出エンティティは全文オフセットで返却します。",
+        "operationId": "mask_text_mask_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MaskRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "マスク結果",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "入力不正"
+          },
+          "422": {
+            "description": "スキーマ不正"
+          },
+          "500": {
+            "description": "内部エラー"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Entity": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "start_char": {
+            "type": "integer",
+            "title": "Start Char"
+          },
+          "end_char": {
+            "type": "integer",
+            "title": "End Char"
+          }
+        },
+        "type": "object",
+        "required": [
+          "label",
+          "text",
+          "start_char",
+          "end_char"
+        ],
+        "title": "Entity"
+      },
+      "MaskRequest": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "targets": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Targets",
+            "description": "マスク対象とするエンティティラベル。省略時は[PERSON, LOCATION, ORGANIZATION, EMAIL, PHONE, URL] を使用"
+          },
+          "masking": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MaskingOptions"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "マスク方法のオプション"
+          }
+        },
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "MaskRequest",
+        "example": {
+          "masking": {
+            "preserve_length": true,
+            "replacement": "＊"
+          },
+          "targets": [
+            "PERSON",
+            "LOCATION",
+            "ORGANIZATION",
+            "EMAIL",
+            "PHONE",
+            "URL"
+          ],
+          "text": "東京都の太郎はメール taro@example.com に連絡した。"
+        }
+      },
+      "MaskResponse": {
+        "properties": {
+          "original": {
+            "type": "string",
+            "title": "Original"
+          },
+          "masked": {
+            "type": "string",
+            "title": "Masked"
+          },
+          "detected": {
+            "items": {
+              "$ref": "#/components/schemas/Entity"
+            },
+            "type": "array",
+            "title": "Detected"
+          }
+        },
+        "type": "object",
+        "required": [
+          "original",
+          "masked",
+          "detected"
+        ],
+        "title": "MaskResponse",
+        "example": {
+          "detected": [
+            {
+              "end_char": 6,
+              "label": "PERSON",
+              "start_char": 4,
+              "text": "太郎"
+            },
+            {
+              "end_char": 27,
+              "label": "EMAIL",
+              "start_char": 11,
+              "text": "taro@example.com"
+            }
+          ],
+          "masked": "＊＊＊の＊＊はメール *************** に連絡した。",
+          "original": "東京都の太郎はメール taro@example.com に連絡した。"
+        }
+      },
+      "MaskingOptions": {
+        "properties": {
+          "replacement": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Replacement",
+            "description": "マスク置換に用いる文字列（1文字以上）",
+            "default": "＊"
+          },
+          "preserve_length": {
+            "type": "boolean",
+            "title": "Preserve Length",
+            "description": "マスク後も元テキスト長を維持するか",
+            "default": true
+          },
+          "fixed_length": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fixed Length",
+            "description": "指定時はスパン長に関わらず、この固定長でマスク（preserve_length より優先）"
+          }
+        },
+        "type": "object",
+        "title": "MaskingOptions"
+      }
+    }
+  }
+}
