@@ -92,9 +92,9 @@
     <section class="lg:col-span-2 space-y-4">
       <div class="wf-box">
         <div class="border-b flex items-center justify-between">
-          <div class="flex text-sm">
-            <button data-tab="result" class="px-4 py-2 border-b-2 border-slate-900" aria-selected="true">結果</button>
-            <button data-tab="diff" class="px-4 py-2 text-slate-500">差分</button>
+          <div class="flex text-sm" role="tablist" aria-label="結果/差分">
+            <button id="tab-result" role="tab" aria-controls="panel-result" data-tab="result" class="px-4 py-2 border-b-2 border-slate-900" aria-selected="true">結果</button>
+            <button id="tab-diff" role="tab" aria-controls="panel-diff" data-tab="diff" class="px-4 py-2 text-slate-500" aria-selected="false">差分</button>
           </div>
         </div>
 
@@ -112,7 +112,7 @@
                 <div class="p-2">Label</div>
                 <div class="p-2">Text</div>
                 <div class="p-2">[start,end]</div>
-                <div class="p-2">[masked_start,end]</div>
+                <div class="p-2">[masked_start, masked_end]</div>
               </div>
               <div class="grid grid-cols-4 gap-0 text-sm border-t">
                 <div class="p-2">PERSON</div>
