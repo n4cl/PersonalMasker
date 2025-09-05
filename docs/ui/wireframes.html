@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>PersonalMasker — Wireframe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* ワイヤーフレームなので装飾は最小。 */
+    .wf-box { @apply border rounded-xl bg-white; }
+    .wf-ghost { @apply bg-slate-50 text-slate-400; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-100 text-slate-900">
+  <!-- Header -->
+  <header class="sticky top-0 z-10 bg-white border-b">
+    <div class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
+      <h1 class="text-lg font-semibold">PersonalMasker — Wireframe</h1>
+      <span class="text-sm text-slate-500">MVP レイアウト確認用（静的）</span>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="mx-auto max-w-6xl px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <!-- Left: 入力 & パラメータ -->
+    <section class="lg:col-span-1 space-y-4">
+      <div class="wf-box p-4">
+        <h2 class="text-sm font-medium mb-2">入力</h2>
+        <div class="text-xs text-slate-500 mb-2">テキスト</div>
+        <div class="h-40 border rounded-md wf-ghost flex items-center justify-center">Textarea（ダミー）</div>
+      </div>
+
+      <div class="wf-box p-4">
+        <h3 class="text-sm font-medium mb-3">パラメータ（マスク対象）</h3>
+        <div class="space-y-2">
+          <p class="text-xs text-slate-500">※ 各項目は 2 値（<span class="font-medium">マスクする</span> / <span class="font-medium">マスクしない</span>）で設定</p>
+          <div class="divide-y">
+            <div class="flex items-center justify-between py-2">
+              <span class="text-sm">PERSON</span>
+              <div class="inline-flex border rounded-md overflow-hidden text-sm">
+                <span class="px-3 py-1 wf-ghost">マスクする</span>
+                <span class="px-3 py-1">マスクしない</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between py-2">
+              <span class="text-sm">EMAIL</span>
+              <div class="inline-flex border rounded-md overflow-hidden text-sm">
+                <span class="px-3 py-1 wf-ghost">マスクする</span>
+                <span class="px-3 py-1">マスクしない</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between py-2">
+              <span class="text-sm">PHONE</span>
+              <div class="inline-flex border rounded-md overflow-hidden text-sm">
+                <span class="px-3 py-1 wf-ghost">マスクする</span>
+                <span class="px-3 py-1">マスクしない</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between py-2">
+              <span class="text-sm">LOCATION</span>
+              <div class="inline-flex border rounded-md overflow-hidden text-sm">
+                <span class="px-3 py-1 wf-ghost">マスクする</span>
+                <span class="px-3 py-1">マスクしない</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between py-2">
+              <span class="text-sm">ORGANIZATION</span>
+              <div class="inline-flex border rounded-md overflow-hidden text-sm">
+                <span class="px-3 py-1 wf-ghost">マスクする</span>
+                <span class="px-3 py-1">マスクしない</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between py-2">
+              <span class="text-sm">URL</span>
+              <div class="inline-flex border rounded-md overflow-hidden text-sm">
+                <span class="px-3 py-1 wf-ghost">マスクする</span>
+                <span class="px-3 py-1">マスクしない</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 space-y-2 text-sm">
+          <div class="flex items-center justify-between"><span>replacement</span><div class="w-32 h-8 border rounded wf-ghost"></div></div>
+          <div class="flex items-center justify-between"><span>preserve_length</span><div class="w-6 h-6 border rounded wf-ghost"></div></div>
+          <div class="flex items-center justify-between"><span>fixed_length</span><div class="w-24 h-8 border rounded wf-ghost"></div></div>
+        </div>
+        <button class="mt-4 w-full h-10 rounded-lg bg-slate-900/80 text-white">マスクを実行（ダミー）</button>
+      </div>
+    </section>
+
+    <!-- Right: 結果 / 差分 タブ -->
+    <section class="lg:col-span-2 space-y-4">
+      <div class="wf-box">
+        <div class="border-b flex items-center justify-between">
+          <div class="flex text-sm">
+            <button data-tab="result" class="px-4 py-2 border-b-2 border-slate-900" aria-selected="true">結果</button>
+            <button data-tab="diff" class="px-4 py-2 text-slate-500">差分</button>
+          </div>
+        </div>
+
+        <!-- Result Panel -->
+        <div id="panel-result" class="p-4 space-y-4">
+          <div>
+            <div class="text-sm text-slate-500 mb-1">マスクした結果</div>
+            <div class="min-h-[120px] border rounded wf-ghost p-3">masked text preview / <mark class="bg-amber-200 px-0.5">highlight</mark></div>
+          </div>
+
+          <div>
+            <div class="text-sm text-slate-500 mb-1">検出スパン一覧</div>
+            <div class="border rounded overflow-hidden">
+              <div class="grid grid-cols-4 gap-0 bg-slate-100 text-xs font-medium">
+                <div class="p-2">Label</div>
+                <div class="p-2">Text</div>
+                <div class="p-2">[start,end]</div>
+                <div class="p-2">[masked_start,end]</div>
+              </div>
+              <div class="grid grid-cols-4 gap-0 text-sm border-t">
+                <div class="p-2">PERSON</div>
+                <div class="p-2 truncate">太郎</div>
+                <div class="p-2">4–6</div>
+                <div class="p-2">4–6</div>
+              </div>
+              <div class="grid grid-cols-4 gap-0 text-sm border-t">
+                <div class="p-2">EMAIL</div>
+                <div class="p-2 truncate">taro@example.com</div>
+                <div class="p-2">11–27</div>
+                <div class="p-2">11–33</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Diff Panel -->
+        <div id="panel-diff" class="hidden p-4 space-y-4">
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <div class="text-xs text-slate-500 mb-1">原文</div>
+              <div class="min-h-[120px] border rounded wf-ghost p-3">original text</div>
+            </div>
+            <div>
+              <div class="text-xs text-slate-500 mb-1">マスク後</div>
+              <div class="min-h-[120px] border rounded wf-ghost p-3">masked text</div>
+            </div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 mb-1">差分ビュー（行/単語ベースの想定）</div>
+            <div class="min-h-[120px] border rounded wf-ghost p-3 text-sm space-y-1">
+              <div>− <span class="line-through">taro@example.com</span></div>
+              <div>＋ <span>＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-xs text-slate-500">状態: Empty / Loading / Error / Success（※このワイヤーでは表示固定）｜API処理時間: -- ms</div>
+    </section>
+  </main>
+
+  <!-- タブ切替（最小JS・本実装時は好みのUIに置換） -->
+  <script>
+    // 最小のタブ切替（ワイヤーフレーム用）
+    const tabs = document.querySelectorAll('[data-tab]');
+    const panels = {
+      result: document.getElementById('panel-result'),
+      diff: document.getElementById('panel-diff')
+    };
+    tabs.forEach(btn => btn.addEventListener('click', () => {
+      const name = btn.dataset.tab;
+      tabs.forEach(b => { b.classList.remove('border-b-2','border-slate-900','text-slate-900'); b.classList.add('text-slate-500'); b.setAttribute('aria-selected','false'); })
+      btn.classList.add('border-b-2','border-slate-900');
+      btn.classList.remove('text-slate-500');
+      btn.setAttribute('aria-selected','true');
+      Object.entries(panels).forEach(([k,el]) => el.classList.toggle('hidden', k !== name));
+    }));
+  </script>
+</body>
+</html>
