@@ -14,3 +14,17 @@ services:
             - WATCHFILES_FORCE_POLLING=1
         command: uvicorn backend.app:app --host 0.0.0.0 --port 8000 --reload --reload-dir /usr/local/app
 
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile.dev
+        working_dir: /app
+        volumes:
+            - ./frontend:/app
+            - /app/node_modules
+        ports:
+            - "5173:5173"
+        container_name: personal_frontend
+        depends_on:
+            - personal
+
