@@ -41,7 +41,7 @@ def _configure_logging() -> None:
 _configure_logging()
 
 
-app = FastAPI(title="PersonalMasker API", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="PersonalMasker API", lifespan=lifespan)
 
 # CORS (development only)
 app.add_middleware(
