@@ -1,8 +1,11 @@
+import logging
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from backend.middlewares.logging import setup_access_log_middleware
 from backend.routers.mask import router as mask_router
 from backend.services.masker import Masker
 
@@ -20,6 +23,22 @@ async def lifespan(app: FastAPI):
     finally:
         # クリーンアップが必要ならここで実施
         pass
+
+
+def _configure_logging() -> None:
+    """
+    ログ設定を初期化する。
+    - LOG_LEVEL: 既定 INFO
+    - LOG_JSON: JSON/プレーンはミドルウェア側で整形
+    """
+
+    level_name = os.getenv("LOG_LEVEL", "INFO").upper()
+    level = getattr(logging, level_name, logging.INFO)
+    # 既存ハンドラがある場合は尊重しつつ、最低限の設定を適用
+    logging.basicConfig(level=level)
+
+
+_configure_logging()
 
 
 app = FastAPI(title="PersonalMasker API", version="0.1.0", lifespan=lifespan)
@@ -43,6 +62,9 @@ app.add_middleware(
 async def health_check():
     return {"status": "healthy"}
 
+
+# Middlewares
+setup_access_log_middleware(app)
 
 # Routers
 app.include_router(mask_router)
