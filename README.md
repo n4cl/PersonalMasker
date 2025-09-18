@@ -3,7 +3,6 @@ PersonalMasker
 
 ## 概要
 PersonalMasker は、テキスト中の個人情報（PII）を自動検出し、マスク処理を行うバックエンド API を提供します。
-v0.2.0 では REST API `/mask` を提供し、検出スパンの位置（元テキスト/マスク後テキストの両方）とマスク済みテキストを返します。
 
 ## クイックスタート
 ### 前提
@@ -55,15 +54,12 @@ docker exec -w /usr/local/app personal \
   python backend/scripts/export_openapi.py --out docs/api/openapi.v1.json
 ```
 
-## プロジェクトの状態（v0.2.0）
+## プロジェクトの状態（v0.3.0）
 - 実装済み
   - `/mask` API（文分割 → GiNZA NER → 正規表現補完 → スパンマージ → マスク）
   - OpenAPI 固定化（`docs/api/openapi.v1.json`）
   - テスト（`backend/tests/...`）
-  - Ruff（`backend/ruff.toml`）、CI（`.github/workflows/ruff.yml`）
-  - アクセスログ（IN/OUT、`request_id`、ローカルタイム `ts`、デバッグ時のみ本文/プレビュー）
   - Makefile によるテスト実行フロー（コンテナ内/外の自動判定）
 - 今後
   - 文分割の精度チューニング
   - 追加エンティティ/ルール、ユーザ辞書の検討
-  - フロントエンド/運用ドキュメントの拡充
