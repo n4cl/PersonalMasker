@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, HTTPException, Request
 
 from backend.schemas.mask import Entity, MaskRequest, MaskResponse
@@ -66,5 +68,6 @@ async def mask_text(payload: MaskRequest, request: Request) -> MaskResponse:
     except HTTPException:
         raise
     except Exception as e:  # noqa: BLE001
-        # 例外の詳細はログなどでトレース（ここでは簡略化）
+        # 例外はアプリロガーへ出力（PIIを含めない）
+        logging.getLogger("app").exception("/mask で例外が発生しました")
         raise HTTPException(status_code=500, detail="内部エラー") from e
