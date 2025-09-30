@@ -6,7 +6,7 @@ Masker サービスのユニットテスト（TDD）
 from typing import Any
 
 import pytest
-from backend.services.masker import Masker, Span
+from backend.app.services.masker import Masker, Span
 
 
 class _FakeDoc:
@@ -67,5 +67,4 @@ def test_preserve_length_false(masker: Masker) -> None:
     s = _find_span(detected, "EMAIL")
     # preserve_length=False の時は replacement を1回だけ
     assert masked[s.start : s.start + 1] == "#"
-
 

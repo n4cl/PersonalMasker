@@ -3,8 +3,8 @@
 
 - app.state.masker を Fake に置き換えてルートの入出力のみ検証
 """
-from backend.app import app
-from backend.services.masker import Span
+from backend.app.main import app
+from backend.app.services.masker import Span
 from fastapi.testclient import TestClient
 
 

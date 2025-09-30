@@ -5,9 +5,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.middlewares.logging import setup_access_log_middleware
-from backend.routers.mask import router as mask_router
-from backend.services.masker import Masker
+from backend.app.middlewares.logging import setup_access_log_middleware
+from backend.app.routers.mask import router as mask_router
+from backend.app.services.masker import Masker
 
 
 @asynccontextmanager
