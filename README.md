@@ -51,7 +51,7 @@ docker compose up
 ### OpenAPI の再生成
 ```bash
 docker exec -w /usr/local/app personal \
-  python backend/scripts/export_openapi.py --out docs/api/openapi.v1.json
+  python backend/app/scripts/export_openapi.py --out docs/api/openapi.v1.json
 ```
 
 ## プロジェクトの状態（v0.3.0）

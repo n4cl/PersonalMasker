@@ -1,15 +1,15 @@
 """
 OpenAPI エクスポートスクリプト
-- backend.app の FastAPI アプリから OpenAPI を生成し、指定パスに出力します。
+- backend.app.main の FastAPI アプリから OpenAPI を生成し、指定パスに出力します。
 使い方（リポジトリルートで実行）:
-    python backend/scripts/export_openapi.py --out docs/api/openapi.v1.json
+    python backend/app/scripts/export_openapi.py --out docs/api/openapi.v1.json
 引数を省略した場合は docs/api/openapi.v1.json に出力します。
 """
 import argparse
 import json
 from pathlib import Path
 
-from backend.app import app
+from backend.app.main import app
 
 
 def parse_args() -> argparse.Namespace:
