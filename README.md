@@ -2,7 +2,9 @@ PersonalMasker
 ===
 
 ## 概要
-PersonalMasker は、テキスト中の個人情報（PII）を自動検出し、マスク処理を行うバックエンド API を提供します。
+PersonalMasker は、テキスト中の個人情報（PII）を自動検出してマスクし、LLM へ渡す前の前処理をローカルで完結できるようにするツールチェーンです。
+
+FastAPI バックエンドとブラウザベースの Playground（Vite + React）を同一コンテナ構成で動かし、API 経由でも UI 経由でもマスキングを試せます。
 
 ## クイックスタート
 ### 前提
@@ -17,7 +19,10 @@ docker compose up
 - FastAPI ドキュメント: `http://localhost:8000/docs`
 
 ### フロントエンド（Playground）から試す
-バックエンドに直接リクエストせず、フロントエンドのPlaygroundから `/mask` を呼び出せます（Vite の dev proxy を利用）。
+
+バックエンドに直接リクエストせず、ブラウザから Playground を使って `/mask` を呼び出せます。
+
+LLM に入力するテキストを貼り付け、マスク結果と検出一覧、差分表示をローカルだけで確認できます。
 
 #### 起動
 ```bash
@@ -43,10 +48,13 @@ docker compose up
 | `LOG_BODY_MAX` | `256` | 本文/プレビューの最大長 | 文字数上限 |
 | `LOG_SAMPLE` | `1.0` | サンプリング率 | 将来拡張用 |
 
-## 開発
-開発時のテスト/Lint 実行はルートの Makefile から行えます（コンテナ起動が前提）。
+## プロジェクト構成と開発
+- `backend/`: FastAPI + spaCy (GiNZA) で動くマスキング API。`backend/app/main.py` がエントリポイント。
+- `frontend/`: Vite + React 製の Playground。ローカルでマスキングを試し、マスク後テキストを LLM に貼り付ける前の確認に利用。
+- `docs/`: OpenAPI スキーマやアーキテクチャ資料。
 
-詳細は `backend/README.md` を参照してください。
+開発時のテスト/Lint 実行はルートの Makefile から行えます（コンテナ起動が前提）。詳細は `backend/README.md` を参照してください。
+
 
 ### OpenAPI の再生成
 ```bash
