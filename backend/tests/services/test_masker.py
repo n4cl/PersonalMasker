@@ -132,3 +132,23 @@ def test_overlapping_entities_are_merged(masker: Masker) -> None:
     assert len(detected) == 2  # 元スパンは保持
     # マージ後は 0-3 を1度だけマスクし、元文字数分だけ繰り返される
     assert masked[:3] == "◎◎◎"
+
+
+def test_organization_entity_mask(masker: Masker) -> None:
+    """Company ラベルが ORGANIZATION としてマスクされる"""
+    masker.nlp.set_ents([_FakeEnt(start_char=0, end_char=3, label="Company")])
+    text = "架空社は新製品を発表した"
+    masked, detected = masker.mask(text=text, targets=["ORGANIZATION"])
+    org_span = _find_span(detected, "ORGANIZATION")
+    assert text[org_span.start:org_span.end] == "架空社"
+    assert set(masked[org_span.start:org_span.end]) == {"＊"}
+
+
+def test_location_entity_mask(masker: Masker) -> None:
+    """City ラベルが LOCATION としてマスクされる"""
+    masker.nlp.set_ents([_FakeEnt(start_char=0, end_char=3, label="City")])
+    text = "東京駅から出発する"
+    masked, detected = masker.mask(text=text, targets=["LOCATION"])
+    location_span = _find_span(detected, "LOCATION")
+    assert text[location_span.start:location_span.end] == "東京駅"
+    assert set(masked[location_span.start:location_span.end]) == {"＊"}
