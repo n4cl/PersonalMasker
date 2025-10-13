@@ -2,7 +2,7 @@ import logging
 
 from fastapi import APIRouter, HTTPException, Request
 
-from backend.schemas.mask import Entity, MaskRequest, MaskResponse
+from backend.app.schemas.mask import Entity, MaskRequest, MaskResponse
 
 router = APIRouter(prefix="/mask", tags=["mask"])
 

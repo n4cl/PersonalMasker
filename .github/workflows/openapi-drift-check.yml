@@ -26,7 +26,7 @@ jobs:
         env:
           PYTHONPATH: .
         run: |
-          python backend/scripts/export_openapi.py --out docs/api/openapi.generated.json
+          python backend/app/scripts/export_openapi.py --out docs/api/openapi.generated.json
 
       - name: Ensure reference exists
         run: |

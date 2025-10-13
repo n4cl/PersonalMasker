@@ -14,9 +14,9 @@ import os
 from typing import Any
 
 import pytest
-from backend.app import app
-from backend.middlewares.logging import setup_access_log_middleware
-from backend.services.masker import Span
+from backend.app.main import app
+from backend.app.middlewares.logging import setup_access_log_middleware
+from backend.app.services.masker import Span
 from fastapi.testclient import TestClient
 
 
@@ -62,7 +62,7 @@ def test_access_log_basic_without_body(monkeypatch: pytest.MonkeyPatch, caplog: 
 
     setup_access_log_middleware(app)
     # 起動時の Masker 生成を軽量スタブへ差し替え（TestClient 起動前に適用）
-    monkeypatch.setattr("backend.app.Masker", lambda *_args, **_kwargs: _FakeMasker())
+    monkeypatch.setattr("backend.app.main.Masker", lambda *_args, **_kwargs: _FakeMasker())
 
     with TestClient(app) as client:
         client.app.state.masker = _FakeMasker()
@@ -114,7 +114,7 @@ def test_access_log_with_debug_body(monkeypatch: pytest.MonkeyPatch, caplog: pyt
     monkeypatch.setenv("LOG_BODY_MAX", "256")
 
     setup_access_log_middleware(app)
-    monkeypatch.setattr("backend.app.Masker", lambda *_args, **_kwargs: _FakeMasker())
+    monkeypatch.setattr("backend.app.main.Masker", lambda *_args, **_kwargs: _FakeMasker())
 
     with TestClient(app) as client:
         client.app.state.masker = _FakeMasker()

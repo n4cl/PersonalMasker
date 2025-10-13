@@ -5,7 +5,7 @@
 """
 from __future__ import annotations
 
-from backend.app import app
+from backend.app.main import app
 from fastapi.testclient import TestClient
 
 
@@ -15,7 +15,7 @@ class _DummyMasker:
 
 
 def test_startup_sets_masker(monkeypatch) -> None:
-    monkeypatch.setattr("backend.app.Masker", _DummyMasker)
+    monkeypatch.setattr("backend.app.main.Masker", _DummyMasker)
     with TestClient(app) as client:
         assert hasattr(client.app.state, "masker")
         assert isinstance(client.app.state.masker, _DummyMasker)

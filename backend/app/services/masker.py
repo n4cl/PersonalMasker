@@ -77,9 +77,9 @@ class Masker:
         lbl = ent_label.upper()
         if lbl in {"PERSON", "PER"}:
             return "PERSON"
-        if lbl in {"ORG", "ORGANIZATION"}:
+        if lbl in {"ORG", "ORGANIZATION", "COMPANY", "CORPORATION", "INTERNATIONAL_ORGANIZATION"}:
             return "ORGANIZATION"
-        if lbl in {"GPE", "LOC", "LOCATION"}:
+        if lbl in {"GPE", "LOC", "LOCATION", "CITY", "PROVINCE", "COUNTRY", "STATE"}:
             return "LOCATION"
         if lbl in {"EMAIL", "E-MAIL"}:
             return "EMAIL"

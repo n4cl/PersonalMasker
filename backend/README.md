@@ -4,6 +4,16 @@
 - Docker / Docker Compose が使用可能
 - `docker compose up` で `personal` コンテナ（バックエンド）が起動済み
 
+## ディレクトリ構成（抜粋）
+- `app/`
+  - `main.py`: FastAPI アプリケーション本体
+  - `middlewares/`: ミドルウェア実装
+  - `routers/`: ルーターモジュール
+  - `schemas/`: Pydantic スキーマ
+  - `services/`: ドメインサービス（マスキング処理など）
+  - `scripts/`: 開発用スクリプト（OpenAPI エクスポートなど）
+- `tests/`: pytest によるユニットテスト
+
 ## 起動
 ```bash
 docker compose up personal
